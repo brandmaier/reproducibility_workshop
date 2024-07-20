@@ -22,7 +22,8 @@ repro:
     - svglite
     - qrcode
     - showtext
-    - here  
+    - here
+    - stargazer
 ---
 class: middle, center
 
@@ -61,6 +62,19 @@ style_extra_css(css = list(".todo" = list(color = "#17C25B"),
                                               `text-orientation` = "mixed")),
                 )
 ```
+
+---
+class: center, middle
+
+# Reproducible Research
+
+# =
+
+# same data + same analysis
+
+# =
+
+# same results
 
 ---
 class: inverse, center, middle
@@ -487,7 +501,7 @@ Confidence intervals (95%) of a simple regression coefficient estimate (with ide
 	
 ### 2.	Locale-dependent behavior (e.g., English vs Lithuania):
 
-````{r eval=FALSE}
+```{r eval=FALSE}
 sort(state.abb) 
 
 [1] "AK" "AL" "AR" "AZ" "CA" "CO" "CT" "DE" "FL" "GA" "HI" "IA" 
@@ -561,6 +575,20 @@ Part: Dynamic Document Generation
 .pull-left[ ![](img/screenshot_rmarkdown_papaja1.png)]
 .pull-right[ ![](img/screenshot_rmarkdown_papaja2.png)]
 
+---
+# Linear model
+```{r results="asis"}
+stargazer(attitude, summary=FALSE)
+linear.1 <- lm(rating ~ complaints + privileges + learning 
+                        + raises + critical, data=attitude)
+stargazer(linear.1)
+```
+---
+# Correlation Matrix with `stargazer` 
+```{r results="asis"}
+correlation.matrix <- cor(attitude)
+stargazer(correlation.matrix, type="html")
+``` 
 ---
 
 class: clear middle inverse
@@ -671,8 +699,8 @@ rerun()
 class: middle, center
 
 # What could possibly go wrong?
-```{r}
-knitr::include_graphics("img/lightbulb/tigersharkbulb.png")
+```{r out.width="30%"}
+knitr::include_graphics("img/gpt/tigersharkbulb.png")
 #![]() 
 ```
 
@@ -684,6 +712,15 @@ knitr::include_graphics("img/lightbulb/tigersharkbulb.png")
 -
 ---
 ![](img/reproducibleRchunks/schema-json-fingerprints.svg) 
+---
+
+![](img/reproducibleRchunks/generation-step1.png)
+---
+
+![](img/reproducibleRchunks/generation-step2.png)
+---
+
+![](img/reproducibleRchunks/generation-step2-failed.png)
 ---
 
 # Where to start
