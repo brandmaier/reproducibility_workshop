@@ -1,0 +1,719 @@
+---
+title: "Reproducible Research in R"
+subtitle: "How to do the same thing more than once"
+author: 
+  - "Andreas Brandmaier"
+date: 'University of Leipzig | `r Sys.Date()`'
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+repro:
+  packages:
+    - aaronpeikert/repro@fc7e884
+    - tidyverse
+    - patchwork
+    - xaringanthemer  
+    - svglite
+    - qrcode
+    - showtext
+    - here  
+---
+class: middle, center
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Some sources
+#
+# https://github.com/brandmaier/reproducible-data-analysis-materials/blob/main/docs/BioPsy2020.Rmd
+# https://github.com/aaronpeikert/repro-workshop/blob/main/presentation.Rmd
+
+repro::automate_load_packages()
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+primary_color <- "#024959"
+secondary_color <- "#F2D605"
+xaringanthemer::style_duo(
+  primary_color = primary_color,
+  secondary_color = secondary_color,
+  header_font_google = google_font("Didact Gothic", "400", "400i"),
+  text_font_google   = google_font("IBM Plex Sans", "400", "400i"),
+  text_font_size = "1.5rem",
+  )
+
+style_extra_css(css = list(".todo" = list(color = "#17C25B"),
+                           ".optional" = list(color = "#05BCE6"),
+                           ".large" = list(`font-size` = "130%"),
+                           ".small" = list(`font-size` = "80%"),
+                           ".tiny" = list(`font-size` = "50%"),
+                           ".full" = list(padding = "0px",
+                                          margin = "0px",
+                                          border = "0px"),
+                           ".emph" = list(color = "#05BCE6"),
+                           ".vertical" = list(`writing-mode` = "vertical-rl",
+                                              `text-orientation` = "mixed")),
+                )
+```
+
+---
+class: inverse, center, middle
+
+# Why should we work reproducibly?
+---
+
+- Transparency
+- Trustworthiness
+- Replication
+
+---
+
+## Your closest collaborator is you six months ago, but you don’t reply to emails.
+
+.footnote[From Karl Broman's lecture on reproducibility, paraphrasing Mark Holden]
+
+---
+class: inverse, center, middle
+# What should be reproducible?
+---
+class: inverse, center, middle
+# Everything
+---
+class: inverse, center, middle
+# (Almost) Everything
+---
+# Statistical Data Analysis
+
+---
+# Power Analysis
+
+Reproducibility of power analyses (Thibault et al., 2024):
+
+- 2% reproduced
+- (likely) 28% reproduced with additional assumptions 
+- 75% not reported transparently enough to assess reproducibility (e.g., unclear whether power analysis matches later statistical analysis)
+
+
+.pull-right[ ![](https://www.medrxiv.org/content/10.1101/2024.07.15.24310458v1) ]
+
+---
+
+---
+class: center, middle
+
+```{r echo=FALSE, out.width= "30%"}
+knitr::include_graphics("img/frustrating.gif")
+```
+
+
+.tiny[No idea how to attribute self-made memes.]
+
+---
+class: center, middle
+
+```{r echo=FALSE, out.width = "50%"}
+knitr::include_graphics("img/satisfying.jpeg")
+```
+
+.tiny[No idea how to attribute self-made memes.]
+
+
+class: inverse, center, middle
+# How should we make our work reproducible?
+---
+
+# Sources of Failure to Reproduce Results
+
+.pull-right[ ![](img/markus-spiske-yUTgdQkbd7c-unsplash.jpg) ]
+
+1. *Multiple versions of scripts/data* (e.g., dataset has changed over, i.e., was further cleaned or extended)
+
+--
+
+2. *Multiple scripts* in a pipeline; unclear which scripts should be executed in which order
+
+--
+
+3. *Copy&paste errors* (e.g., inconsistency between reported result and reproduced result)
+
+--
+
+4. Broken *software dependencies* (e.g., analysis broken after update, missing package)
+
+
+---
+
+# Four Elements of Reproducibility
+
+.center[
+
+```{r, echo=FALSE, out.width='70%'}
+knitr::include_graphics("https://raw.githubusercontent.com/aaronpeikert/repro-tutorial/main/images/nutshell.svg")
+```
+
+]
+
+.footnote[from Peikert and Brandmaier (2020)]
+
+---
+
+class: left, middle, inverse
+background-image: url(http://3.bp.blogspot.com/-c7bI_n5oXd0/U7vTYArmRoI/AAAAAAAAKoQ/3JkxLM2PRKo/s1600/gospels-meme.jpg)
+background-position: right
+
+<!-- -----------------------------
+
+Part: Version Control
+
+--------------------------------- -->
+
+# Version Control
+
+---
+
+## Version control in a nutshell
+
+--
+
+### Version 1 → Version 2 → Version 3 → Current
+
+--
+
+### +
+
+### Time travel
+
+--
+
+### +
+
+### Change detection
+
+---
+
+# Version Control
+
+### Version Control
+
+.pull-left[
+
+- Version control systems (VCS) such as `git` record changes to a set of files over time so that you can restore specific versions
+later.
+
+- VCS guarantee that code and data are exactly the same
+version as used for publication.
+
+- Reduces the number of dead or dysfunctional code lines (deletion is safe and branches help separate productive and experimental code)
+
+]
+
+.pull-right[
+
+![](img/screenshot_github_compare.png)
+
+]
+---
+
+background-image: url(img/screenshot_github_releases.png)
+background-size: contain
+
+# Releases on github.com
+
+---
+
+# Long-Term Storage
+
+- GitHub has no long-term guarantees for the availability of its service
+
+--
+
+- even though they do .emph[LOCKSS] (for Lots Of Copies Keeps Stuff Safe, e.g., the Artic World Archive)
+
+--
+
+- Mirror snapshots with meta-data and DOI to other providers (e.g., Zenodo, FigShare, OSF)
+
+- This helps making the repository (F)indable (as in FAIR)
+
+---
+
+background-image: url(img/claudio-schwarz-purzlbaum-qjX0QBtDXto-unsplash.jpg)
+background-size: cover
+background-position: right top
+class: left, middle, inverse, clear
+
+
+# <br><br><br><br><br>Dependency Management
+
+
+---
+
+### Challenge
+
+.pull-left[
+Once someone found our files... 
+which of those files are executable and in which order are they to be executed?
+]
+
+---
+
+class: middle
+## Whats cooking?
+
+.pull-left[
+
+> Arrabbiata sauce, or sugo all'arrabbiata in Italian, is a spicy sauce for pasta made from garlic, tomatoes, and dried red chili peppers cooked in olive oil. 
+
+.small["Arrabbiata sauce" from Wikipedia under [CC BY-SA 3.0](https://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License)]
+
+]
+
+---
+class: middle
+## Whats cooking?
+
+.pull-left[
+
+> Arrabbiata sauce, or sugo all'arrabbiata in Italian, is a spicy **sauce** for **pasta** made from **garlic**, **tomatoes**, and dried red **chili** peppers cooked in olive oil. 
+
+.small["Arrabbiata sauce" from Wikipedia under [CC BY-SA 3.0](https://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License), emphasis added]
+
+]
+
+--
+
+.pull-right[
+
+.large[
+
+```
+arrabiata.pdf: arrabiata.Rmd sauce.csv R/pasta.R 
+  Rscript -e "rmarkdown::render('arrabiata.Rmd')"
+
+sauce.csv: R/cook.R tomatoes.zip aromatics.yaml
+  Rscript -e "source(R/cook.R)"
+
+aromatics.yaml: R/sizzle.py garlic.txt chili.json
+  python sizzle.py garlic.txt
+  python sizzle.py chili.json
+```
+
+]
+
+]
+
+---
+
+background-image: url(https://www.gnu.org/graphics/empowered-by-gnu.svg)
+background-size: 20% 38%
+background-position: right top
+
+# GNU Make
+---
+
+
+# Solution: Make
+
+## A Makefile
+
+- contains a number of recipes
+
+- Each recipe contains its ingredients (=dependencies) and commands to create the product
+
+- There is a default recipe (defined entry point)
+
+- By convention, there is an .emph[„all“] recipe to create everything 
+
+- Recipes can depend on other recipes and files
+
+---
+
+# Make
+
+## Why Make?
+
+- A single, well-defined entry point for your analysis (default target):
+	`make`
+	
+- Management of all external dependencies in one file via (dependend) targets, such as 
+
+  - Installing extra software
+
+  - Starting external programs (such as pre-processing pipelines)
+
+  - Downloading data from external repositories
+
+---
+
+# Example Makefile
+
+### Makefile Schema
+
+```{bash, eval=FALSE}
+recipe name: ingredients
+  instructions
+```
+
+--
+
+### An example Makefile
+```{bash, eval=FALSE}
+all: manuscript.pdf
+
+manuscript.pdf: data/iris_prepped.csv manuscript.Rmd
+  Rscript -e 'rmarkdown::render("manuscript.Rmd")'
+
+data/iris_prepped.csv: R/prepare_data.R data/iris.csv
+  Rscript -e 'source("R/prepare_data.R")'
+```
+
+---
+
+
+class: left, middle, inverse
+background-image: url(https://www.docker.com/sites/default/files/d8/2019-07/horizontal-logo-monochromatic-white.png)
+background-position: right
+
+<!-- -----------------------------
+
+Containerization
+
+--------------------------------- -->
+
+# Containerization
+---
+
+background-image: url(https://www.docker.com/sites/default/files/d8/2019-07/Docker-Logo-White-RGB_Vertical.png)
+background-position: top, right
+background-size: 50% 50%
+
+# Docker
+
+A Docker container is like a shareable virtual machine that runs identically on any computer (Linux, macOS, Windows)
+
+- You can either provide a short recipe how to create a container (few kilobytes) or 
+- the entire container (few gigabytes)
+
+--
+
+Recipes are instructions how to create a container from publicly available sources, e.g., 
+
+-   Rocker project (Boettiger & Eddelbuettel, 2017), with pre-configured Debian images including R/Rstudio
+-   Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“
+
+```{bash, eval=FALSE}
+FROM rocker/verse:3.6.1
+ARG BUILD_DATE=2019-11-11
+RUN install2.r --error --skipinstalled here lavaan
+WORKDIR /home/rstudio
+```
+
+---
+
+# The easy way
+
+- The R package `renv` helps you to set up and restore project-specific local environments in R
+
+- Create a private R library with `renv::init()` (the project will now always rely on the local library)
+
+- Update a library with `renv::snapshot()` 
+
+- Restore a library with `renv::restore()` 
+
+.footnote[cf. the WORCS approach by van Lissa et al. (2020)]
+
+### But is this really enough?
+
+---
+
+# Examples of Non-Reproducible Code in R
+
+Here are some examples of non-reproducible code that cannot be captured easily from within a given R environment
+
+### 1.	Bugfix in random number generator in R between R 3.5 and R 3.6
+
+```{r eval=FALSE}
+set.seed(1234); 
+sample(1:10, 5) 
+```
+
+--
+
+```{r eval=FALSE}
+2 6 5 8 9 (R3.5)
+```
+
+--
+
+```{r eval=FALSE}
+10 6 5 4 1 (R3.6.1)
+```
+
+---
+
+# Examples of Non-Reproducible Code in R
+
+Confidence intervals (95%) of a simple regression coefficient estimate (with identical random seed):
+
+.pull-left[
+```{r eval=FALSE}
+[1] "R version 3.5.0 (2018-04-23)"
+
+2.5 % 97.5 %
+ 0.0097 0.3842
+```
+]
+
+.pull-right[
+```{r eval=FALSE}
+ [1] "R version 3.6.1 (2019-07-05)"
+
+ 2.5 % 97.5 %
+ -0.0005 0.3748
+```
+]
+
+.footnote[Note that the results are not reproduced but replicated.]
+
+---
+
+#  Examples of Non-Reproducible Code in R
+	
+### 2.	Locale-dependent behavior (e.g., English vs Lithuania):
+
+````{r eval=FALSE}
+sort(state.abb) 
+
+[1] "AK" "AL" "AR" "AZ" "CA" "CO" "CT" "DE" "FL" "GA" "HI" "IA" 
+[13] "ID" "IL" "IN" "KY" "KS" "LA" "MA" "MD" "ME" "MI" "MN" "MO" 
+[25] "MS" "MT" "NC" "ND" "NE" "NH" "NY" "NJ" "NM" "NV" "OH" "OK" 
+[37] "OR" "PA" "RI" "SC" "SD" "TN" "TX" "UT" "VA" "VT" "WA" "WI" 
+[49] "WY" "WV"
+```
+
+---
+
+
+# Containers
+
+### Docker containers 
+
+- guarantee identical execution of its contents across platforms (and time) including cloud computing
+
+--
+
+- can run interactively: R/Rstudio can run in the container (i.e., there is no need to ever run the analysis in your local computing environment)
+
+--
+
+- Analyses can be run in different containers (simulating different package versions) to find out what downstream updates broke your code / your results
+
+
+---
+
+
+class: left, middle, clear
+background-image: url(img/neven-krcmarek-V4EOZj7g1gw-unsplash.jpg)
+background-position: right middle
+background-size: cover
+
+<!-- -----------------------------
+
+Part: Dynamic Document Generation
+
+--------------------------------- -->
+
+# <br><br><br><br><br>Dynamic Document<br>Generation
+
+---
+
+# R Markdown Example
+
+.pull-left[
+![](img/screenshot_rmarkdown_raw.png)
+]
+..pull-right[
+![](img/screenshot_rmarkdown_rendered.png)
+]
+---
+
+# Number reporting (APA style) with papaja
+
+.pull-left[
+![](img/screenshot_rmarkdown_apa.png)
+]
+
+.pull-right[
+![](img/screenshot_rmarkdown_apa2.png)
+
+]
+
+---
+
+# Reporting statistics with papaja
+
+.pull-left[ ![](img/screenshot_rmarkdown_papaja1.png)]
+.pull-right[ ![](img/screenshot_rmarkdown_papaja2.png)]
+
+---
+
+class: clear middle inverse
+
+# The repro package
+
+---
+
+# YAML header (R Markdown)
+
+A standard YAML header:
+
+```{r, eval=FALSE}
+---
+title: My worst academic fails
+author: Andreas Brandmaier
+date: 2020-11-17
+output: html_document
+---
+```
+
+---
+
+# YAML header (repro)
+
+`repro` extends the YAML header of R Markdown to track dependencies on .emph[code] (internal scripts and external packages) and .emph[data] files.
+
+---
+# Example
+```{r, eval=FALSE}
+---
+title: My worst academic fails
+author: Andreas Brandmaier
+date: 2020-11-17
+repro:
+  packages:
+    - usethis
+    - fs
+    - aaronpeikert/repro@d09def75df
+  scripts:
+    - R/clean.R
+  data:
+    mycars: data/mtcars.csv
+output: html_document
+---
+```
+
+
+---
+
+# System setup with repro
+
+Load the package:
+
+```{r echo=TRUE,eval=TRUE, message=FALSE}
+library(repro)
+```
+
+Run some checks:
+
+```{r}
+check_git()
+check_make()
+check_docker()
+```
+
+---
+
+# Project setup with `repro`
+
+- Use `repro::automate()` to make an existing RMarkdown analysis reproducible
+
+- creates a Dockerfile & Makefile based on every RMarkdown in the project folder
+
+- use `automate_load_packages()` to load all packages in your script, `automate_load_data`() for data, and  `automate_load_scripts()` to attach external scripts
+
+---
+
+# Reproduction
+
+To reproduce a project completely inside a container:
+
+```{r eval=FALSE}
+library(repro)
+rerun()
+```
+
+
+---
+
+
+# Outlook
+
+	
+## Long-term sustainability is a continuing challenge for the community
+
+- We need academic repositories that
+
+  - are freely accessible (no commercial interests)
+  - guarantee long-term reproducibility (independent of short-term grants)
+  - provide not only disk space but software infrastructure and computational environments
+
+- We need to better recognize the efforts of maintaining scientific software (such as repro and many others) and curating digital collections
+
+---
+
+
+class: middle, center
+
+# What could possibly go wrong?
+```{r}
+knitr::include_graphics("img/lightbulb/tigersharkbulb.png")
+#![]() 
+```
+
+---
+# Problems
+
+- Docker not available (e.g., no admin rights, unsupported computing platform)
+- 
+-
+---
+![](img/reproducibleRchunks/schema-json-fingerprints.svg) 
+---
+
+# Where to start
+
+```{r}
+link <- "https://github.com/brandmaier/reproducibleRchunks"
+generate_svg(qr_code(link), here::here("img/", "qr_reproducibleRchunks.svg"), foreground = secondary_color, background = primary_color, show = FALSE)
+```
+
+```{r}
+knitr::include_graphics("img/qr_reproducibleRchunks.svg")
+```
+
+---
+
+# Thank you!
+
+If you want to know more:
+
+  - Ask us a question via a [github issue](https://github.com/aaronpeikert/repro/issues)
+  - Follow [@brandmaier](https://twitter.com/brandmaier) on twitter
+  - Read our [preprint](https://psyarxiv.com/8xzqy/)
+  - Contribute to our [repro](https://github.com/aaronpeikert/repro) repository on GitHub or [reproducibleRchunks](https://github.com/brandmaier/reproducibleRchunks)
+
+
+
+---
+
+# License Information
+
+- This presentation is distributed under CC-BY 4.0
+- The ananas image on the title and other unsplash images were provided under the Unsplash License.
+- The GNU logo was provided under the Free Art License.
