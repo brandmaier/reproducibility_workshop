@@ -311,6 +311,9 @@ table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
 .emph {
   color: #05BCE6;
 }
+.del {
+  text-decoration: line-through;
+}
 .vertical {
   writing-mode: vertical-rl;
   text-orientation: mixed;

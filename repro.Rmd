@@ -58,6 +58,7 @@ style_extra_css(css = list(".todo" = list(color = "#17C25B"),
                                           margin = "0px",
                                           border = "0px"),
                            ".emph" = list(color = "#05BCE6"),
+                           ".del" = list(`text-decoration`="line-through"),
                            ".vertical" = list(`writing-mode` = "vertical-rl",
                                               `text-orientation` = "mixed")),
                 )
@@ -390,10 +391,10 @@ data/iris_prepped.csv: R/prepare_data.R data/iris.csv
 ---
 
 
-class: left, middle, inverse
-background-image: url(https://www.docker.com/sites/default/files/d8/2019-07/horizontal-logo-monochromatic-white.png)
-background-position: right
-
+background-image: url(img/chris-linnett-jQ6bMceL4Gw-unsplash.jpg)
+background-size: cover
+background-position: right top
+class: left, middle, inverse, clear
 <!-- -----------------------------
 
 Containerization
@@ -401,25 +402,26 @@ Containerization
 --------------------------------- -->
 
 # Containerization
+
+
+
 ---
 
-background-image: url(https://www.docker.com/sites/default/files/d8/2019-07/Docker-Logo-White-RGB_Vertical.png)
-background-position: top, right
-background-size: 50% 50%
+
 
 # Docker
 
 A Docker container is like a shareable virtual machine that runs identically on any computer (Linux, macOS, Windows)
 
-- You can either provide a short recipe how to create a container (few kilobytes) or 
-- the entire container (few gigabytes)
+- You can either provide a short .emph[recipe] how to create a container (few kilobytes) or 
+- the entire .emph[container] (few gigabytes)
 
 --
 
 Recipes are instructions how to create a container from publicly available sources, e.g., 
 
 -   Rocker project (Boettiger & Eddelbuettel, 2017), with pre-configured Debian images including R/Rstudio
--   Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“
+-   .del[Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“]
 
 ```{bash, eval=FALSE}
 FROM rocker/verse:3.6.1
@@ -581,7 +583,7 @@ Part: Dynamic Document Generation
 stargazer(attitude, summary=FALSE)
 linear.1 <- lm(rating ~ complaints + privileges + learning 
                         + raises + critical, data=attitude)
-stargazer(linear.1)
+stargazer(linear.1, type="html")
 ```
 ---
 # Correlation Matrix with `stargazer` 
@@ -699,7 +701,7 @@ rerun()
 class: middle, center
 
 # What could possibly go wrong?
-```{r out.width="30%"}
+```{r out.width="30%", echo=FALSE, eval=TRUE}
 knitr::include_graphics("img/gpt/tigersharkbulb.png")
 #![]() 
 ```
@@ -711,6 +713,17 @@ knitr::include_graphics("img/gpt/tigersharkbulb.png")
 - 
 -
 ---
+# Solution
+
+## reproducibleRchunks 
+
+## are just like regular R chunks
+
+## but verify reproducibility of computations 
+
+---
+# reproducibleRchunks
+
 ![](img/reproducibleRchunks/schema-json-fingerprints.svg) 
 ---
 
@@ -721,6 +734,26 @@ knitr::include_graphics("img/gpt/tigersharkbulb.png")
 ---
 
 ![](img/reproducibleRchunks/generation-step2-failed.png)
+---
+class: inverse, center, middle
+# What should be reproducible?
+---
+class: inverse, center, middle
+# (Almost) Everything
+---
+## Some things we do not care about
+
+Time information such as:
+- current time or date
+- run time of a model
+- time elapsed for a given computation
+
+---
+
+class: center
+
+# Extract only necessary bits from a model and verify them
+
 ---
 
 # Where to start
