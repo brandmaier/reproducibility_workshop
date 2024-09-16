@@ -113,6 +113,8 @@ Many good reasons like
 - Trustworthiness
 - Replication
 
+> Transparency and accessibility are central scientific values, and open, reproducible projects will increase the efficiency and veracity of knowledge accumulation `r Citep(bib, "bar2012reporting")`.
+
 ---
 
 ## Your closest collaborator is you six months ago, but you don’t reply to emails.
@@ -180,7 +182,7 @@ class: inverse, center, middle
 
 # Rule 1: Keep your stuff together!
 
-Always avoid local paths. Probably a good idea to add this to your `.Rprofile`:
+Always avoid local paths. Probably (*not*) a good idea to add this to your user-wide `.Rprofile` (`usethis::edit_r_profile()`):
 
 ```{r echo=TRUE}
 setwd <- function(...) { stop("Bad boy!")}
@@ -196,7 +198,7 @@ setwd("C:/Users/brandmaier/SOEP")
 ---
 # Use `here`
 
-Use RStudio and R projects instead
+Use RStudio and *R projects* instead
 
 The command `here` retrieves files relative to project root
 
@@ -233,7 +235,7 @@ here("data/soep.csv")
 .center[
 
 ```{r, echo=FALSE, out.width='60%'}
-knitr::include_graphics("https://raw.githubusercontent.com/aaronpeikert/repro-tutorial/main/images/nutshell.png")
+knitr::include_graphics("img/nutshell.png")
 ```
 
 ]
@@ -286,7 +288,7 @@ class: inverse, middle, center
 
 .pull-left[
 
-- Version control systems (VCS) such as `git` record changes to a set of files over time so that you can restore specific versions
+- Version control systems (VCS) such as `git` record changes to a set of files over time; restore specific versions
 later.
 
 - VCS guarantee that code and data are exactly the same
@@ -323,6 +325,16 @@ background-size: contain
 - Mirror snapshots with meta-data and DOI to other providers (e.g., Zenodo, FigShare, OSF)
 
 - This helps making the repository (F)indable (as in FAIR)
+
+---
+
+# Collaborative editing
+
+- Multiple authors can commit to their local repositories and synchronize with a central repository (automated merge of non-conflicting changes)
+
+- Authors can work on separate branches, which can be merged later (e.g., *pull request* with mandatory *review*)
+
+- Authors can fork (clone) the entire repository
 
 <!-- -----------------------------
 
@@ -685,7 +697,7 @@ class: inverse, center, middle
 
 ### Docker containers 
 
-- guarantee identical execution of its contents across platforms (and time) including cloud computing
+- guarantee identical execution of its contents across platforms (and time) including cloud computing (such as github actions)
 
 --
 
@@ -711,6 +723,10 @@ Part 4: Dynamic Document Generation
 --------------------------------- -->
 
 # <br><br><br><br><br>Dynamic Document<br>Generation
+
+---
+class: inverse, center, middle
+# Problem: Oh these darn copy&paste errors!
 
 ---
 
@@ -744,19 +760,18 @@ Part 4: Dynamic Document Generation
 
 ---
 # Linear model
-```{r results="asis"}
+```{r results="asis", eval=TRUE}
 stargazer(attitude, summary=FALSE)
 linear.1 <- lm(rating ~ complaints + privileges + learning 
                         + raises + critical, data=attitude)
 stargazer(linear.1, type="html")
 ```
 ---
-# Correlation Matrix with `stargazer` 
-```{r results="asis"}
-correlation.matrix <- cor(attitude)
-stargazer(correlation.matrix, type="html")
+# APA Table
+```{r results="asis",eval=TRUE}
+papaja::apa_table(data.frame(A=1:3,B=4:6,C=5:7))
 ``` 
-
+---
 # Thank you, statcheck, we'll take it from here
 class: inverse, middle, center
 
@@ -894,7 +909,7 @@ reproduce()
   - guarantee long-term reproducibility (independent of short-term grants)
   - provide not only disk space but software infrastructure and computational environments
 
-- We need to better recognize the efforts of maintaining scientific software (such as repro and many others) and curating digital collections
+- We need to better recognize the efforts of maintaining scientific software (such as repro and many others) and curating digital collections and community services `r Citep(bib,"brandmaier2024assessing")`
 
 ---
 
@@ -1057,11 +1072,11 @@ knitr::include_graphics("img/qr_repro.svg")
 
 # Thank you!
 
-If you want to know more:
+If you want to engage:
 
   - Ask us a question via a [github issue](https://github.com/aaronpeikert/repro/issues)
-  - Follow [@brandmaier](https://twitter.com/brandmaier) on twitter
-  - Read our [preprint](https://psyarxiv.com/8xzqy/)
+  - Follow [@brandmaier](https://twitter.com/brandmaier) on twitter or .strong[@brandmaier.bsky.social]
+  - Read our papers on the topic (see refs)
   - Contribute to our [repro](https://github.com/aaronpeikert/repro) repository on GitHub or [reproducibleRchunks](https://github.com/brandmaier/reproducibleRchunks)
 
 
