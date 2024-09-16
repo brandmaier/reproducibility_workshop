@@ -13,7 +13,6 @@ output:
       highlightLines: true
       ratio: 16:9
       countIncrementalSlides: true
-      seal: false
 repro:
   packages:
     - aaronpeikert/repro@fc7e884
@@ -25,17 +24,7 @@ repro:
     - showtext
     - here
     - stargazer
----
-background-image: url(img/neven-krcmarek-V4EOZj7g1gw-unsplash.jpg)
-background-position: center
-background-size: contain
-class: center, middle
-# <br>
-# Reproducible Research <br> in R
 
-### Andreas M. Brandmaier
-
-#### University of Leipzig | `r Sys.Date()`
 ---
 
 class: middle, center
@@ -84,8 +73,15 @@ style_extra_css(css = list(".todo" = list(color = "#17C25B"),
                            ".vertical" = list(`writing-mode` = "vertical-rl",
                                               `text-orientation` = "mixed")),
                 )
+
+link <- "https://github.com/brandmaier/reproducibility_workshop"
+
+generate_svg(qr_code(link), here::here("img/", "qr_talk.svg"), foreground = secondary_color, background = primary_color, show = FALSE)
 ```
 Please ask questions anytime
+---
+class: center, middle
+<img src="img/qr_talk.svg">
 ---
 class: center, middle
 
@@ -294,7 +290,7 @@ later.
 - VCS guarantee that code and data are exactly the same
 version as used for publication.
 
-- Reduces the number of dead or dysfunctional code lines (deletion is safe and branches help separate productive and experimental code)
+- Allows collaboration and track-changes
 
 ]
 
@@ -362,21 +358,8 @@ which of those files are executable and in which order are they to be executed?
 ]
 
 ---
-
 class: middle
-## Whats cooking?
-
-.pull-left[
-
-> Arrabbiata sauce, or sugo all'arrabbiata in Italian, is a spicy sauce for pasta made from garlic, tomatoes, and dried red chili peppers cooked in olive oil. 
-
-.small["Arrabbiata sauce" from Wikipedia under [CC BY-SA 3.0](https://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License)]
-
-]
-
----
-class: middle
-## Whats cooking?
+## What's cooking?
 
 .pull-left[
 
@@ -390,21 +373,14 @@ class: middle
 
 .pull-right[
 
-.large[
 
-```
-arrabiata.pdf: arrabiata.Rmd sauce.csv R/pasta.R 
-  Rscript -e "rmarkdown::render('arrabiata.Rmd')"
+> 1. Bring 6 quarts of **water** to a boil in a large pot, and add 3 tablespoons **kosher salt**.
+2. Meanwhile, put 4 tablespoons **olive oil** in a large sauté pan over medium heat, [...]
 
-sauce.csv: R/cook.R tomatoes.zip aromatics.yaml
-  Rscript -e "source(R/cook.R)"
+.small[Source: cooking.nytimes.com]
 
-aromatics.yaml: R/sizzle.py garlic.txt chili.json
-  python sizzle.py garlic.txt
-  python sizzle.py chili.json
-```
 
-]
+
 
 ]
 
@@ -414,11 +390,7 @@ background-image: url(https://www.gnu.org/graphics/empowered-by-gnu.svg)
 background-size: 20% 38%
 background-position: right top
 
-# GNU Make
----
-
-
-# Solution: Make
+# Solution: GNU Make
 
 ## A Makefile
 
@@ -507,7 +479,7 @@ Part 3: Containers
 background-image: url(img/chris-linnett-jQ6bMceL4Gw-unsplash.jpg)
 background-size: cover
 background-position: right top
-class: left, middle, inverse, clear
+class: left, inverse, clear
 <!-- -----------------------------
 
 Containerization
@@ -539,7 +511,7 @@ A Docker container is like a shareable virtual machine that runs identically on 
 Recipes are instructions how to create a container from publicly available sources, e.g., 
 
 -   Rocker project (Boettiger & Eddelbuettel, 2017), with pre-configured Debian images including R/Rstudio
-<p style="color:white">- Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“ (out of service now!)</p>
+- Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“ (out of service now!)
 
 ```{bash, eval=FALSE}
 {{FROM rocker/verse:3.6.1}}
@@ -581,7 +553,7 @@ WORKDIR /home/rstudio
 
 - The project library, renv/library, is a library that contains all packages currently used by your project
 
-- the renv.lock file, which contains meta data about the local library
+- the renv.lock file, which contains meta data about the local library (**share** this with collaborators)
 
 - A project R profile `.Rprofile`, which is loaded once a project is loaded (remember `setwd()`)
 
@@ -605,9 +577,9 @@ class: center
 <small>Source: https://rstudio.github.io/renv/articles/renv.html</small>
 
 ---
-
-# But is this really enough?
 class: inverse, middle, center
+# But is this really enough?
+
 
 ---
 
@@ -687,6 +659,22 @@ sort(state.abb)
 ```
 
 ---
+
+# 3. Defaults change over time
+
+- Loading data has different defaults from R 4.0+
+
+- `read.csv()` now has stringsAsFactors = FALSE
+
+- Earlier strings were converted to factors automatically (with levels sorted by local language) => non-reproducibility
+
+```{r}
+c("0", "1", "A", "B", "a", "b")
+```
+
+sorted to ` 01aAbB` in German, `01AaBb` in Norwegian, 01ABa in `Korean`
+
+---
 class: inverse, center, middle
 # There is a need for reproducible computational environments
 
@@ -759,18 +747,11 @@ class: inverse, center, middle
 .pull-right[ ![](img/screenshot_rmarkdown_papaja2.png)]
 
 ---
-# Linear model
-```{r results="asis", eval=TRUE}
-stargazer(attitude, summary=FALSE)
-linear.1 <- lm(rating ~ complaints + privileges + learning 
-                        + raises + critical, data=attitude)
-stargazer(linear.1, type="html")
-```
----
 # APA Table
-```{r results="asis",eval=TRUE}
-papaja::apa_table(data.frame(A=1:3,B=4:6,C=5:7))
-``` 
+
+![](img/lin-apa-table.png)
+
+.footnote[From: `r Citet(bib,"lin2021assessing")`]
 ---
 # Thank you, statcheck, we'll take it from here
 class: inverse, middle, center
@@ -899,15 +880,16 @@ reproduce()
 
 
 # Outlook
-
+---
 	
 ## Long-term sustainability is a continuing challenge for the community
 
 - We need academic repositories that
-
   - are freely accessible (no commercial interests)
   - guarantee long-term reproducibility (independent of short-term grants)
   - provide not only disk space but software infrastructure and computational environments
+
+--
 
 - We need to better recognize the efforts of maintaining scientific software (such as repro and many others) and curating digital collections and community services `r Citep(bib,"brandmaier2024assessing")`
 
@@ -1095,6 +1077,16 @@ If you want to engage:
 
 .small[
 ```{r, results='asis', echo=FALSE}
-PrintBibliography(bib)
+PrintBibliography(bib, start=1, end=5)
+```
+]
+
+---
+
+# References
+
+.small[
+```{r, results='asis', echo=FALSE}
+PrintBibliography(bib, start=6)
 ```
 ]
