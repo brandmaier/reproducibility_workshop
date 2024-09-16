@@ -2,7 +2,7 @@
 title: "Reproducible Research in R"
 subtitle: "How to do the same thing more than once"
 author: 
-  - "Andreas Brandmaier"
+  - "Andreas Brandmaier and Aaron Peikert"
 date: 'University of Leipzig | `r Sys.Date()`'
 output:
   xaringan::moon_reader:
@@ -13,6 +13,7 @@ output:
       highlightLines: true
       ratio: 16:9
       countIncrementalSlides: true
+      seal: false
 repro:
   packages:
     - aaronpeikert/repro@fc7e884
@@ -25,6 +26,18 @@ repro:
     - here
     - stargazer
 ---
+background-image: url(img/neven-krcmarek-V4EOZj7g1gw-unsplash.jpg)
+background-position: center
+background-size: contain
+class: center, middle
+# <br>
+# Reproducible Research <br> in R
+
+### Andreas M. Brandmaier
+
+#### University of Leipzig | `r Sys.Date()`
+---
+
 class: middle, center
 
 ```{r setup, include=FALSE}
@@ -36,6 +49,15 @@ knitr::opts_chunk$set(echo = TRUE)
 # https://github.com/aaronpeikert/repro-workshop/blob/main/presentation.Rmd
 
 repro::automate_load_packages()
+
+
+library(RefManageR)
+BibOptions(check.entries = FALSE, bib.style = "authoryear", style = "markdown",
+           dashed = TRUE)
+
+BibOptions(hyperlink=FALSE);
+
+bib <- ReadBib("references.bib")
 ```
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
@@ -63,7 +85,7 @@ style_extra_css(css = list(".todo" = list(color = "#17C25B"),
                                               `text-orientation` = "mixed")),
                 )
 ```
-
+Please ask questions anytime
 ---
 class: center, middle
 
@@ -82,6 +104,10 @@ class: inverse, center, middle
 
 # Why should we work reproducibly?
 ---
+
+# Why should we work reproducibly?
+
+Many good reasons like 
 
 - Transparency
 - Trustworthiness
@@ -103,21 +129,30 @@ class: inverse, center, middle
 class: inverse, center, middle
 # (Almost) Everything
 ---
+
 # Statistical Data Analysis
 
+- Replication attempt of articles in journal _Cognition_ `r Citep(bib, "hardwicke2018data")`
+- Out of 35 published articles with open code and data, the results of 22 articles could be reproduced, 
+- Further assistance from the original authors was required in 11 cases
+- For 13 articles, at least one outcome could not be reproduced—even with the original authors’ assistance. 
+---
+# Statistical Data Analysis
+
+- in 62 registered reports only 41 had data available, and 37 had analysis scripts available `r Citet(bib,"obels2020analysis")`. 
+- The authors could execute only 31 of the scripts without error
+- They reproduced the results of only 21 articles (within a reasonable time). 
+--
+- Lesson: Just because it's open data/code, it's not necessarily useful
+ 
 ---
 # Power Analysis
 
-Reproducibility of power analyses (Thibault et al., 2024):
+Reproducibility of power analyses `r Citet(bib,"thibault2024evaluation")`:
 
 - 2% reproduced
 - (likely) 28% reproduced with additional assumptions 
 - 75% not reported transparently enough to assess reproducibility (e.g., unclear whether power analysis matches later statistical analysis)
-
-
-.pull-right[ ![](https://www.medrxiv.org/content/10.1101/2024.07.15.24310458v1) ]
-
----
 
 ---
 class: center, middle
@@ -127,7 +162,7 @@ knitr::include_graphics("img/frustrating.gif")
 ```
 
 
-.tiny[No idea how to attribute self-made memes.]
+.tiny[Meme by Aaron Peikert]
 
 ---
 class: center, middle
@@ -136,11 +171,40 @@ class: center, middle
 knitr::include_graphics("img/satisfying.jpeg")
 ```
 
-.tiny[No idea how to attribute self-made memes.]
+.tiny[Meme by Aaron Peikert]
 
 
 class: inverse, center, middle
 # How should we make our work reproducible?
+---
+
+# Rule 1: Keep your stuff together!
+
+Always avoid local paths. Probably a good idea to add this to your `.Rprofile`:
+
+```{r echo=TRUE}
+setwd <- function(...) { stop("Bad boy!")}
+```
+--
+Then:
+```{r eval=FALSE}
+setwd("C:/Users/brandmaier/SOEP")
+```
+
+> Error in `setwd()`: Bad boy!
+
+---
+# Use `here`
+
+Use RStudio and R projects instead
+
+The command `here` retrieves files relative to project root
+
+```{r}
+here("data/soep.csv")
+```
+
+*Project should be self-contained*
 ---
 
 # Sources of Failure to Reproduce Results
@@ -159,7 +223,7 @@ class: inverse, center, middle
 
 --
 
-4. Broken *software dependencies* (e.g., analysis broken after update, missing package)
+4. Broken *software dependencies* (e.g., analysis broken after update, missing package, just comes out differently on a different computer )
 
 
 ---
@@ -168,8 +232,8 @@ class: inverse, center, middle
 
 .center[
 
-```{r, echo=FALSE, out.width='70%'}
-knitr::include_graphics("https://raw.githubusercontent.com/aaronpeikert/repro-tutorial/main/images/nutshell.svg")
+```{r, echo=FALSE, out.width='60%'}
+knitr::include_graphics("https://raw.githubusercontent.com/aaronpeikert/repro-tutorial/main/images/nutshell.png")
 ```
 
 ]
@@ -184,11 +248,15 @@ background-position: right
 
 <!-- -----------------------------
 
-Part: Version Control
+Part 1: Version Control
 
 --------------------------------- -->
 
 # Version Control
+
+---
+class: inverse, middle, center
+# Problem: Multiple versions of scripts/data
 
 ---
 
@@ -256,6 +324,11 @@ background-size: contain
 
 - This helps making the repository (F)indable (as in FAIR)
 
+<!-- -----------------------------
+
+Part 2: Dependency Management
+
+--------------------------------- -->
 ---
 
 background-image: url(img/claudio-schwarz-purzlbaum-qjX0QBtDXto-unsplash.jpg)
@@ -269,7 +342,7 @@ class: left, middle, inverse, clear
 
 ---
 
-### Challenge
+### Problem
 
 .pull-left[
 Once someone found our files... 
@@ -345,7 +418,7 @@ background-position: right top
 
 - By convention, there is an .emph[„all“] recipe to create everything 
 
-- Recipes can depend on other recipes and files
+- Recipes can depend on other recipes and/or files
 
 ---
 
@@ -366,6 +439,18 @@ background-position: right top
 
 ---
 
+# Key features
+
+Missing ingredients will be generated,  
+.small[*e.g., if the cleaned data is missing, the raw data is first cleaned.*]
+
+Newer ingredients trigger updates,  
+.small[*e.g., new data leads to recreation of the whole manuscript.*]
+
+Always the same "button" that triggers reproduction,  
+.small[*e.g., regardless of programming language, file format, and intermediate steps.*]
+
+---
 # Example Makefile
 
 ### Makefile Schema
@@ -384,10 +469,26 @@ all: manuscript.pdf
 manuscript.pdf: data/iris_prepped.csv manuscript.Rmd
   Rscript -e 'rmarkdown::render("manuscript.Rmd")'
 
-data/iris_prepped.csv: R/prepare_data.R data/iris.csv
-  Rscript -e 'source("R/prepare_data.R")'
+data/iris_prepped.csv: R/preprocess_data.R data/iris.csv
+  Rscript -e 'source("R/preprocess_data.R")'
 ```
 
+---
+
+# Native R alternative?
+
+Alternative: build automation using the `targets` package `r Citet(bib,"targets2021")` 
+
+- using `tar_target(y, f(x))` instead of `y <- f(x)`
+- then `tar_make()` builds/updates all targets
+- like in Make, things are built only if they changed
+- built-in visualization of dependency graph 
+
+<!-- -----------------------------
+
+Part 3: Containers
+
+--------------------------------- -->
 ---
 
 
@@ -408,6 +509,9 @@ Containerization
 ---
 
 
+class: inverse, middle
+# Problem: Broken *software dependencies* ('dependency hell')
+---
 
 # Docker
 
@@ -416,15 +520,17 @@ A Docker container is like a shareable virtual machine that runs identically on 
 - You can either provide a short .emph[recipe] how to create a container (few kilobytes) or 
 - the entire .emph[container] (few gigabytes)
 
---
+---
+
+# Docker Recipes
 
 Recipes are instructions how to create a container from publicly available sources, e.g., 
 
 -   Rocker project (Boettiger & Eddelbuettel, 2017), with pre-configured Debian images including R/Rstudio
--   .del[Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“]
+<p style="color:white">- Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“ (out of service now!)</p>
 
 ```{bash, eval=FALSE}
-FROM rocker/verse:3.6.1
+{{FROM rocker/verse:3.6.1}}
 ARG BUILD_DATE=2019-11-11
 RUN install2.r --error --skipinstalled here lavaan
 WORKDIR /home/rstudio
@@ -432,19 +538,74 @@ WORKDIR /home/rstudio
 
 ---
 
+# Docker Recipes
+
+Recipes are instructions how to create a container from publicly available sources, e.g., 
+
+-   Rocker project (Boettiger & Eddelbuettel, 2017), with pre-configured Debian images including R/Rstudio
+-   Microsoft R Application Network (MRAN) providing CRAN snapshots in their „time machine“ (out of service now!)
+
+```{bash, eval=FALSE}
+FROM rocker/verse:3.6.1
+ARG BUILD_DATE=2019-11-11
+{{RUN install2.r --error --skipinstalled here lavaan}}
+WORKDIR /home/rstudio
+```
+
+
+---
+
 # The easy way
 
-- The R package `renv` helps you to set up and restore project-specific local environments in R
+- The collection of installed packages is a _library_ in R
+
+- The R package `renv` (Ushey & Wickham, 2024) separates system library from _project-specific local libraries_ in R
+
+- Key concept: _isolation_ of your project's dependencies from your system and other projects (different projects can use different package versions)
+
+---
+
+# Components
+
+- The project library, renv/library, is a library that contains all packages currently used by your project
+
+- the renv.lock file, which contains meta data about the local library
+
+- A project R profile `.Rprofile`, which is loaded once a project is loaded (remember `setwd()`)
+
+---
+
+# Commands
 
 - Create a private R library with `renv::init()` (the project will now always rely on the local library)
 
-- Update a library with `renv::snapshot()` 
+- Update a library with `renv::snapshot()` (e.g. when updating packages to a newer version)
 
 - Restore a library with `renv::restore()` 
 
 .footnote[cf. the WORCS approach by van Lissa et al. (2020)]
+---
+class: center
+# Overview
 
-### But is this really enough?
+![](img/renv.png)
+
+<small>Source: https://rstudio.github.io/renv/articles/renv.html</small>
+
+---
+
+# But is this really enough?
+class: inverse, middle, center
+
+---
+
+# The case of pseudo random numbers
+
+- Pseudo random numbers are important in modern statistics, e.g. permutation tests, bootstrapping, random forests but also for reproducible allocation of participants to experimental conditions
+
+- PRN generators can be thought of as long lists of numbers that repeat only after a very long time (efficiently represented as a mathematical function); the list is determined by a starting condition (_seed_)
+
+- For reproducibility, we need to fix that initial _seed_ (ideally by another random process)
 
 ---
 
@@ -514,7 +675,11 @@ sort(state.abb)
 ```
 
 ---
+class: inverse, center, middle
+# There is a need for reproducible computational environments
 
+
+---
 
 # Containers
 
@@ -541,7 +706,7 @@ background-size: cover
 
 <!-- -----------------------------
 
-Part: Dynamic Document Generation
+Part 4: Dynamic Document Generation
 
 --------------------------------- -->
 
@@ -591,8 +756,17 @@ stargazer(linear.1, type="html")
 correlation.matrix <- cor(attitude)
 stargazer(correlation.matrix, type="html")
 ``` 
----
 
+# Thank you, statcheck, we'll take it from here
+class: inverse, middle, center
+
+
+---
+<!-- -----------------------------
+
+Part 5: repro package
+
+--------------------------------- -->
 class: clear middle inverse
 
 # The repro package
@@ -669,13 +843,40 @@ check_docker()
 
 ---
 
+# Under the hood
+
+```{r}
+cat("
+✔ Setting active project to 'C:/Users/andreas.brandmaier/LokaleDokumente/GitHub/reproducibility_workshop'
+✔ Directory `.repro` created!
+✔ Writing '.repro/Dockerfile_base'
+✔ Writing '.repro/Dockerfile_packages'
+✔ Writing '.repro/Dockerfile_manual'
+✔ Writing 'Dockerfile'
+✔ Writing '.repro/Makefile_Rmds'
+✔ Writing '.repro/Makefile_Docker'
+✔ Writing '.dockerignore'
+• Modify '.dockerignore'
+✔ Writing 'Makefile'
+• Modify 'Makefile'
+• Maybe you want to add:
+  'repro.html'
+  to the 'Makefile'-target 'all'.")
+```
+---
+# Docker
+
+![](img/screenshot-dockerfile.png)
+
+---
+
 # Reproduction
 
-To reproduce a project completely inside a container:
+To reproduce a project completely:
 
 ```{r eval=FALSE}
 library(repro)
-rerun()
+reproduce()
 ```
 
 
@@ -710,15 +911,15 @@ knitr::include_graphics("img/gpt/tigersharkbulb.png")
 # Problems
 
 - Docker not available (e.g., no admin rights, unsupported computing platform)
-- 
--
+- After upgrading to new R, new package versions, new computer, do results still reproduce?
+
 ---
 # Solution
 
 ## reproducibleRchunks 
-
+--
 ## are just like regular R chunks
-
+--
 ## but verify reproducibility of computations 
 
 ---
@@ -735,6 +936,36 @@ knitr::include_graphics("img/gpt/tigersharkbulb.png")
 
 ![](img/reproducibleRchunks/generation-step2-failed.png)
 ---
+# How does it work?
+
+```{r}
+set.seed(42)
+numbers <- sample(1:10, 5)
+```
+
+becomes a serialized JSON file:
+
+\begin{verbatim}
+```{r echo=FALSE, eval=TRUE, results="asis"}
+content <- jsonlite::serializeJSON(numbers, pretty=TRUE)
+content <- gsub(pattern="\\n",replacement="  \n", x=content)
+cat(content)
+```
+\end{verbatim}
+
+---
+# What are valid variables?
+
+All of the following variables (`x` of class _integer_, `y` of class _character_, `z` of class _lm_, and `lst` of class _list_) are valid examples for the automated reproducibility checks:
+
+```{r examples, eval=FALSE, echo=TRUE}
+  x <- 1:10
+  y <- "qr"
+  z <- lm(x~1, method=y)
+  lst <- list(x, y, z)
+```
+
+---
 class: inverse, center, middle
 # What should be reproducible?
 ---
@@ -748,23 +979,78 @@ Time information such as:
 - run time of a model
 - time elapsed for a given computation
 
+Other information that changes between sessions (shoud be avoided anyhow):
+- user names
+- local paths 
+
 ---
 
 class: center
 
 # Extract only necessary bits from a model and verify them
 
+The `broom` package has a generic function `tidy` with model-specific functions (e.g., lm, anova, factanal, glm, lavaan, gam,...) to extract all relevant parameter estimates:
+
+```{r echo=TRUE, eval=TRUE}
+x <- rnorm(10)
+y <- rnorm(10)
+broom::tidy(lm(y~x))
+```
+---
+# Outlook: PAC 
+
+- preregistration currently entail a lot of work because we need two write two manuscripts (prereg + final ms)
+
+- preregistrations still suffer from ambiguities of written language, omissions, underdefined processes
+
+- With reproducible pipelines, we could move towards Preregistration as Code (PAC)
+
+---
+# Outlook: PAC 
+
+Advantages
+
+- Write your manuscript once with everything but the discussion
+- Generate all tables and figures based on simulated data
+- Once real data is collected, replace data, reproduce manuscript
+- Deviate from original plan if necessary, summarize, also: all changes are _transparently_ documented in git
+- Write discussion, done.
+---
+# How would this look in practice?
+
+Example online here ("gender differences in Machiavellianism") `r Citep(bib,"peikert2021reproducible")` including power analysis
+
+![https://github.com/aaronpeikert/repro-tutorial/blob/main/preregistration.Rmd]
+
+Modifications we had to make after the simulated PAC:
+
+- recoding gender from (1,2) to (male, female)
+- removal of NA values was missing
+- half of the items of Machiavellianism are reverse-coded
+
+---
+# Take-home message
+
+```{r echo=FALSE, out.width= "30%"}
+knitr::include_graphics("img/frustrating.gif")
+```
+
 ---
 
 # Where to start
 
-```{r}
+```{r echo=FALSE,eval=TRUE}
 link <- "https://github.com/brandmaier/reproducibleRchunks"
+link2 <- "https://github.com/aaronpeikert/repro"
+
 generate_svg(qr_code(link), here::here("img/", "qr_reproducibleRchunks.svg"), foreground = secondary_color, background = primary_color, show = FALSE)
+
+generate_svg(qr_code(link2), here::here("img/", "qr_repro.svg"), foreground = secondary_color, background = primary_color, show = FALSE)
 ```
 
-```{r}
+```{r eval=TRUE, echo=FALSE}
 knitr::include_graphics("img/qr_reproducibleRchunks.svg")
+knitr::include_graphics("img/qr_repro.svg")
 ```
 
 ---
@@ -784,6 +1070,16 @@ If you want to know more:
 
 # License Information
 
-- This presentation is distributed under CC-BY 4.0
+- This presentation is distributed under CC-BY 4.0 unless otherwise stated or other sources are mentioned
 - The ananas image on the title and other unsplash images were provided under the Unsplash License.
 - The GNU logo was provided under the Free Art License.
+
+---
+
+# References
+
+.small[
+```{r, results='asis', echo=FALSE}
+PrintBibliography(bib)
+```
+]
