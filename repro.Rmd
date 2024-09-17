@@ -185,9 +185,13 @@ class: inverse, center, middle
 # How should we make our work reproducible?
 ---
 
-# Rule 1: Keep your stuff together!
+# Rule 1: Make it portable & keep your stuff together!
 
-**Always avoid local paths**. Probably (*not*) a good idea to add this to your user-wide `.Rprofile` (`usethis::edit_r_profile()`):
+**Always avoid local paths**. 
+
+--
+
+Probably (*not*) a good idea to add this to your user-wide `.Rprofile` (`usethis::edit_r_profile()`):
 
 ```{r echo=TRUE}
 setwd <- function(...) { stop("Bad boy!")}
@@ -201,7 +205,7 @@ setwd("C:/Users/brandmaier/SOEP")
 > Error in `setwd()`: Bad boy!
 
 ---
-# Use `here`
+# Use projects and `here`
 
 Use RStudio and *R projects* instead
 
@@ -218,19 +222,19 @@ here("data/soep.csv")
 
 .pull-right[ ![](img/markus-spiske-yUTgdQkbd7c-unsplash.jpg) ]
 
-1. *Multiple versions of scripts/data* (e.g., dataset has changed over, i.e., was further cleaned or extended)
+1. **Multiple versions of scripts/data** (e.g., dataset has changed over, i.e., was further cleaned or extended)
 
 --
 
-2. *Multiple scripts* in a pipeline; unclear which scripts should be executed in which order
+2. **Multiple scripts** in a pipeline; unclear which scripts should be executed in which order
 
 --
 
-3. *Copy&paste errors* (e.g., inconsistency between reported result and reproduced result)
+3. **Copy&paste errors** (e.g., inconsistency between reported result and reproduced result)
 
 --
 
-4. Broken *software dependencies* (e.g., analysis broken after update, missing package, just comes out differently on a different computer )
+4. Broken **software dependencies** (e.g., analysis broken after update, missing package, just comes out differently on a different computer )
 
 
 ---
@@ -761,22 +765,44 @@ class: inverse, center, middle
 
 .footnote[From: `r Citet(bib,"lin2021assessing")`]
 ---
-# Thank you, statcheck, we'll take it from here
 class: inverse, middle, center
+# Thank you, statcheck, we'll take it from here
 
 
----
 <!-- -----------------------------
 
 Part 5: repro package
 
 --------------------------------- -->
+
+---
+
 class: clear middle inverse
 
 # The repro package
 
 ---
 
+# Four Elements of Reproducibility
+
+.center[
+
+```{r, echo=FALSE, out.width='60%'}
+knitr::include_graphics("img/nutshell.png")
+```
+
+]
+
+.footnote[from Peikert and Brandmaier (2020)]
+
+---
+# YAML header (repro)
+
+`repro` extends the YAML header of **R Markdown** to track dependencies on .emph[code] (internal scripts and external packages) and .emph[data] files.
+
+...and takes care of preparing your project for **git**, **Make**, and **Docker**
+
+---
 # YAML header (R Markdown)
 
 A standard YAML header:
@@ -792,11 +818,7 @@ output: html_document
 
 ---
 
-# YAML header (repro)
 
-`repro` extends the YAML header of R Markdown to track dependencies on .emph[code] (internal scripts and external packages) and .emph[data] files.
-
----
 # Example
 ```{r, eval=FALSE}
 ---
@@ -916,16 +938,18 @@ knitr::include_graphics("img/gpt/tigersharkbulb.png")
 # Problems
 
 - Docker not available (e.g., no admin rights, unsupported computing platform)
-- After upgrading to new R, new package versions, new computer, do results still reproduce?
+- After upgrading to new R, new package versions, new computer, how do we know whether results still reproduce?
 
 ---
 # Solution
 
-## reproducibleRchunks 
+**reproducibleRchunks**
 --
-## are just like regular R chunks
+
+are just like regular R chunks
 --
-## but verify reproducibility of computations 
+
+but verify reproducibility of computations 
 
 ---
 # reproducibleRchunks
@@ -935,10 +959,10 @@ knitr::include_graphics("img/gpt/tigersharkbulb.png")
 
 ![](img/reproducibleRchunks/generation-step1.png)
 ---
-
+# Reproduction reports
 ![](img/reproducibleRchunks/generation-step2.png)
 ---
-
+# Reproduction reports
 ![](img/reproducibleRchunks/generation-step2-failed.png)
 ---
 # How does it work?
@@ -950,13 +974,13 @@ numbers <- sample(1:10, 5)
 
 becomes a serialized JSON file:
 
-\begin{verbatim}
+
 ```{r echo=FALSE, eval=TRUE, results="asis"}
 content <- jsonlite::serializeJSON(numbers, pretty=TRUE)
 content <- gsub(pattern="\\n",replacement="  \n", x=content)
 cat(content)
 ```
-\end{verbatim}
+
 
 ---
 # What are valid variables?
