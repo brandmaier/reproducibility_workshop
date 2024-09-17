@@ -132,21 +132,30 @@ class: inverse, center, middle
 
 - Replication attempt of articles in journal _Cognition_ `r Citep(bib, "hardwicke2018data")`
 - Out of 35 published articles with open code and data, the results of 22 articles could be reproduced, 
+--
+
 - Further assistance from the original authors was required in 11 cases
+--
+
 - For 13 articles, at least one outcome could not be reproduced—even with the original authors’ assistance. 
 ---
 # Statistical Data Analysis
 
-- in 62 registered reports only 41 had data available, and 37 had analysis scripts available `r Citet(bib,"obels2020analysis")`. 
+- in 62 registered reports only 41 had data available, and 37 had analysis scripts available `r Citep(bib,"obels2020analysis")`. 
+--
+
 - The authors could execute only 31 of the scripts without error
+--
+
 - They reproduced the results of only 21 articles (within a reasonable time). 
 --
+
 - Lesson: Just because it's open data/code, it's not necessarily useful
  
 ---
 # Power Analysis
 
-Reproducibility of power analyses `r Citet(bib,"thibault2024evaluation")`:
+Reproducibility of power analyses `r Citep(bib,"thibault2024evaluation")`:
 
 - 2% reproduced
 - (likely) 28% reproduced with additional assumptions 
@@ -178,7 +187,7 @@ class: inverse, center, middle
 
 # Rule 1: Keep your stuff together!
 
-Always avoid local paths. Probably (*not*) a good idea to add this to your user-wide `.Rprofile` (`usethis::edit_r_profile()`):
+**Always avoid local paths**. Probably (*not*) a good idea to add this to your user-wide `.Rprofile` (`usethis::edit_r_profile()`):
 
 ```{r echo=TRUE}
 setwd <- function(...) { stop("Bad boy!")}
@@ -280,8 +289,6 @@ class: inverse, middle, center
 
 # Version Control
 
-### Version Control
-
 .pull-left[
 
 - Version control systems (VCS) such as `git` record changes to a set of files over time; restore specific versions
@@ -299,6 +306,17 @@ version as used for publication.
 ![](img/screenshot_github_compare.png)
 
 ]
+
+---
+
+# Collaborative editing
+
+- Multiple authors can **commit** changes to their local repositories and **push** (synchronize) with a central repository (automated merge of non-conflicting changes)
+
+- Authors can work on separate branches, which can be merged later (e.g., **pull request** with mandatory **review**)
+
+- Authors can **fork** (clone) the entire repository
+
 ---
 
 background-image: url(img/screenshot_github_releases.png)
@@ -321,16 +339,6 @@ background-size: contain
 - Mirror snapshots with meta-data and DOI to other providers (e.g., Zenodo, FigShare, OSF)
 
 - This helps making the repository (F)indable (as in FAIR)
-
----
-
-# Collaborative editing
-
-- Multiple authors can commit to their local repositories and synchronize with a central repository (automated merge of non-conflicting changes)
-
-- Authors can work on separate branches, which can be merged later (e.g., *pull request* with mandatory *review*)
-
-- Authors can fork (clone) the entire repository
 
 <!-- -----------------------------
 
@@ -406,35 +414,7 @@ background-position: right top
 
 ---
 
-# Make
 
-## Why Make?
-
-- A single, well-defined entry point for your analysis (default target):
-	`make`
-	
-- Management of all external dependencies in one file via (dependend) targets, such as 
-
-  - Installing extra software
-
-  - Starting external programs (such as pre-processing pipelines)
-
-  - Downloading data from external repositories
-
----
-
-# Key features
-
-Missing ingredients will be generated,  
-.small[*e.g., if the cleaned data is missing, the raw data is first cleaned.*]
-
-Newer ingredients trigger updates,  
-.small[*e.g., new data leads to recreation of the whole manuscript.*]
-
-Always the same "button" that triggers reproduction,  
-.small[*e.g., regardless of programming language, file format, and intermediate steps.*]
-
----
 # Example Makefile
 
 ### Makefile Schema
@@ -456,6 +436,34 @@ manuscript.pdf: data/iris_prepped.csv manuscript.Rmd
 data/iris_prepped.csv: R/preprocess_data.R data/iris.csv
   Rscript -e 'source("R/preprocess_data.R")'
 ```
+
+---
+
+# Key features
+
+Missing ingredients will be generated,  
+.small[*e.g., if the cleaned data is missing, the raw data is first cleaned.*]
+
+Newer ingredients trigger updates,  
+.small[*e.g., new data leads to recreation of the whole manuscript.*]
+
+Always the same "button" that triggers reproduction,  
+.small[*e.g., regardless of programming language, file format, and intermediate steps.*]
+
+---
+
+# Why Make
+
+- A single, well-defined entry point for your analysis (default target):
+	`make`
+	
+- Management of all external dependencies in one file via (dependend) targets, such as 
+
+  - Installing extra software
+
+  - Starting external programs (such as pre-processing pipelines)
+
+  - Downloading data from external repositories
 
 ---
 
@@ -539,7 +547,7 @@ WORKDIR /home/rstudio
 
 ---
 
-# The easy way
+# The easy way: renv
 
 - The collection of installed packages is a _library_ in R
 
