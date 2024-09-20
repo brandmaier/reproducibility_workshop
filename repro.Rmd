@@ -187,7 +187,7 @@ class: inverse, center, middle
 
 # Rule 1: Make it portable & keep your stuff together!
 
-**Always avoid local paths**. 
+**Always avoid absolute file paths**. 
 
 --
 
@@ -340,9 +340,16 @@ background-size: contain
 
 --
 
-- Mirror snapshots with meta-data and DOI to other providers (e.g., Zenodo, FigShare, OSF)
+- Mirror snapshots with meta-data and DOI to other providers (e.g., Zenodo, FigShare, **OSF via plugin**)
 
 - This helps making the repository (F)indable (as in FAIR)
+
+---
+
+# In RStudio
+
+![](img/rstudio-git-screenshot.png)
+
 
 <!-- -----------------------------
 
@@ -367,6 +374,10 @@ class: left, middle, inverse, clear
 .pull-left[
 Once someone found our files... 
 which of those files are executable and in which order are they to be executed?
+]
+
+.pull-right[
+<img src="img/ikea.jfif" />
 ]
 
 ---
@@ -471,6 +482,14 @@ Always the same "button" that triggers reproduction,
 
 ---
 
+# Make in RStudio
+
+![](img/rstudio-make.png)
+
+Trigger default make using **build all**
+
+---
+
 # Native R alternative?
 
 Alternative: build automation using the `targets` package `r Citet(bib,"targets2021")` 
@@ -550,8 +569,20 @@ WORKDIR /home/rstudio
 
 
 ---
+# Run in Docker
 
-# The easy way: renv
+Example of how to run R in a docker image from the terminal interactively (--it) and without saving its state (--rm)
+
+```{bash dockerr, eval=FALSE}
+# start an interactive R session in the
+# container named 'reproducible-research'
+docker run --rm -it reproducible-research R
+```
+
+more info in `r Citep(bib,"peikert2021reproducibleworkflow")`
+---
+
+# The *maybe good enough* way: renv
 
 - The collection of installed packages is a _library_ in R
 
@@ -599,9 +630,9 @@ class: inverse, middle, center
 
 - Pseudo random numbers are important in modern statistics, e.g. permutation tests, bootstrapping, random forests but also for reproducible allocation of participants to experimental conditions
 
-- PRN generators can be thought of as long lists of numbers that repeat only after a very long time (efficiently represented as a mathematical function); the list is determined by a starting condition (_seed_)
+- PRN generators can be thought of as long lists of numbers that repeat only after a very long time (efficiently represented as a mathematical function); the list is determined by a starting condition (**seed**)
 
-- For reproducibility, we need to fix that initial _seed_ (ideally by another random process)
+- For reproducibility, we need to fix that initial **seed** (ideally by another random process)
 
 ---
 
@@ -684,7 +715,7 @@ sort(state.abb)
 c("0", "1", "A", "B", "a", "b")
 ```
 
-sorted to ` 01aAbB` in German, `01AaBb` in Norwegian, 01ABa in `Korean`
+sorted to ` 01aAbB` in German, `01AaBb` in Norwegian, `01ABab` in `Korean`
 
 ---
 class: inverse, center, middle
@@ -701,7 +732,7 @@ class: inverse, center, middle
 
 --
 
-- can run interactively: R/Rstudio can run in the container (i.e., there is no need to ever run the analysis in your local computing environment)
+- can run interactively: R/Rstudio can run in the container (i.e., there is no need to ever run the analysis in your local computing environment, see `r Citet(bib,"peikert2021reproducibleworkflow")`)
 
 --
 
@@ -909,26 +940,11 @@ reproduce()
 ---
 
 
-# Outlook
----
-	
-## Long-term sustainability is a continuing challenge for the community
-
-- We need academic repositories that
-  - are freely accessible (no commercial interests)
-  - guarantee long-term reproducibility (independent of short-term grants)
-  - provide not only disk space but software infrastructure and computational environments
-
---
-
-- We need to better recognize the efforts of maintaining scientific software (such as repro and many others) and curating digital collections and community services `r Citep(bib,"brandmaier2024assessing")`
-
----
-
-
 class: middle, center
 
 # What could possibly go wrong?
+---
+
 ```{r out.width="30%", echo=FALSE, eval=TRUE}
 knitr::include_graphics("img/gpt/tigersharkbulb.png")
 #![]() 
