@@ -1126,9 +1126,11 @@ class: center, middle
 
 # Where to start
 
-```{r worcs, out.height=""50%}
+```{r worcs, out.width="60%", eval=TRUE, echo=FALSE}
 knitr::include_graphics("img/worcs-workflow.png")
 ```
+
+.small[`r Citep(bib, "van2021worcs")`]
 
 ---
 class: center, middle
@@ -1156,7 +1158,7 @@ Link to this talk:
 If you want to engage:
 
   - Ask us a question via a [github issue](https://github.com/aaronpeikert/repro/issues)
-  - Follow [@brandmaier](https://twitter.com/brandmaier) on twitter or .strong[@brandmaier.bsky.social]
+  - Follow [@brandmaier](https://twitter.com/brandmaier) on twitter or **@brandmaier.bsky.social**
   - Read our papers on the topic (see refs)
   - Contribute to our [repro](https://github.com/aaronpeikert/repro) repository on GitHub or [reproducibleRchunks](https://github.com/brandmaier/reproducibleRchunks)
 
