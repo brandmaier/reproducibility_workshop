@@ -2,11 +2,12 @@
 title: "Reproducible Research in R"
 subtitle: "How to do the same thing more than once"
 author: 
-  - "Andreas Brandmaier and Aaron Peikert"
+  - "Andreas Brandmaier (and Aaron Peikert)"
 date: 'University of Leipzig | `r Sys.Date()`'
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
+    chakra: libs/remark-latest.min.js   
     nature:
       slideNumberFormat: "%current%"
       highlightStyle: github
@@ -271,6 +272,25 @@ class: inverse, middle, center
 
 ---
 
+## Version control
+
+** manuscript_revised.docx **
+
+--
+
+** manuscript_revised_final.docx **
+
+--
+
+** manuscript_revised_final_commentsAB.docx **
+
+--
+
+** manuscript_revised_final_commentsAB_final.docx **
+
+
+---
+
 ## Version control in a nutshell
 
 --
@@ -320,6 +340,8 @@ version as used for publication.
 - Authors can work on separate branches, which can be merged later (e.g., **pull request** with mandatory **review**)
 
 - Authors can **fork** (clone) the entire repository
+
+- Added value in some systems (issues, project management, ...)
 
 ---
 
@@ -610,7 +632,7 @@ more info in `r Citep(bib,"peikert2021reproducibleworkflow")`
 
 - Restore a library with `renv::restore()` 
 
-.footnote[cf. the WORCS approach by van Lissa et al. (2020)]
+.footnote[cf. the WORCS approach by `r Citep(bib, "van2021worcs")`]
 ---
 class: center
 # Overview
@@ -944,12 +966,11 @@ class: middle, center
 
 # What could possibly go wrong?
 ---
+class: center, middle
 
-```{r out.width="30%", echo=FALSE, eval=TRUE}
-knitr::include_graphics("img/gpt/tigersharkbulb.png")
-#![]() 
+```{r echo=FALSE, out.width= "50%"}
+knitr::include_graphics("img/gpt/tigersharkbulb.png") 
 ```
-
 ---
 # Problems
 
@@ -962,23 +983,34 @@ knitr::include_graphics("img/gpt/tigersharkbulb.png")
 **reproducibleRchunks**
 --
 
-are just like regular R chunks
+are just like regular R Markdown chunks
 --
 
 but verify reproducibility of computations 
 
 ---
+class: center, middle
+
 # reproducibleRchunks
 
-![](img/reproducibleRchunks/schema-json-fingerprints.svg) 
+
+![](img/reproducibleRchunks/schema-json-fingerprints.png) 
 ---
+class: center, middle
+
+# Reproduction reports
 
 ![](img/reproducibleRchunks/generation-step1.png)
 ---
-# Reproduction reports
+class: center, middle
+
+# Reproduction reports (Success)
 ![](img/reproducibleRchunks/generation-step2.png)
 ---
-# Reproduction reports
+class: center, middle
+
+# Reproduction reports (Failed)
+
 ![](img/reproducibleRchunks/generation-step2-failed.png)
 ---
 # How does it work?
@@ -988,7 +1020,7 @@ set.seed(42)
 numbers <- sample(1:10, 5)
 ```
 
-becomes a serialized JSON file:
+becomes a serialized JSON file (whose changes are trackable via *git*):
 
 
 ```{r echo=FALSE, eval=TRUE, results="asis"}
@@ -997,11 +1029,12 @@ content <- gsub(pattern="\\n",replacement="  \n", x=content)
 cat(content)
 ```
 
+.footnote[but really, we store a hash fingerprint for privacy and space reasons]
 
 ---
 # What are valid variables?
 
-All of the following variables (`x` of class _integer_, `y` of class _character_, `z` of class _lm_, and `lst` of class _list_) are valid examples for the automated reproducibility checks:
+All of the following variables (`x` of class *integer*, `y` of class *character*, `z` of class *lm*, and `lst` of class *list*) are valid examples for the automated reproducibility checks:
 
 ```{r examples, eval=FALSE, echo=TRUE}
   x <- 1:10
@@ -1042,6 +1075,12 @@ y <- rnorm(10)
 broom::tidy(lm(y~x))
 ```
 ---
+class: inverse, center, middle
+
+# Reproducibility + Preregistration
+
+---
+
 # Outlook: PAC 
 
 - preregistration currently entail a lot of work because we need two write two manuscripts (prereg + final ms)
@@ -1074,6 +1113,8 @@ Modifications we had to make after the simulated PAC:
 - half of the items of Machiavellianism are reverse-coded
 
 ---
+class: center, middle
+
 # Take-home message
 
 ```{r echo=FALSE, out.width= "30%"}
@@ -1081,6 +1122,16 @@ knitr::include_graphics("img/frustrating.gif")
 ```
 
 ---
+class: center, middle
+
+# Where to start
+
+```{r worcs, out.height=""50%}
+knitr::include_graphics("img/worcs-workflow.png")
+```
+
+---
+class: center, middle
 
 # Where to start
 
@@ -1092,12 +1143,12 @@ generate_svg(qr_code(link), here::here("img/", "qr_reproducibleRchunks.svg"), fo
 
 generate_svg(qr_code(link2), here::here("img/", "qr_repro.svg"), foreground = secondary_color, background = primary_color, show = FALSE)
 ```
-
+Link to this talk:
 ```{r eval=TRUE, echo=FALSE}
-knitr::include_graphics("img/qr_reproducibleRchunks.svg")
-knitr::include_graphics("img/qr_repro.svg")
+#knitr::include_graphics("img/qr_repro.svg")
+#knitr::include_graphics("img/qr_reproducibleRchunks.svg")
 ```
-
+<img src="img/qr_talk.svg">
 ---
 
 # Thank you!
@@ -1115,8 +1166,7 @@ If you want to engage:
 
 # License Information
 
-- This presentation is distributed under CC-BY 4.0 unless otherwise stated or other sources are mentioned
-- The ananas image on the title and other unsplash images were provided under the Unsplash License.
+- This presentation file is distributed under CC0 unless otherwise stated or other sources are included
 - The GNU logo was provided under the Free Art License.
 
 ---
