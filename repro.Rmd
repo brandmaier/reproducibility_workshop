@@ -2,7 +2,7 @@
 title: "Reproducible Research in R"
 subtitle: "How to do the same thing more than once"
 author: 
-  - "Andreas Brandmaier (and Aaron Peikert)"
+  - "Andreas Brandmaier"
 date: 'University of Leipzig | `r Sys.Date()`'
 output:
   xaringan::moon_reader:
@@ -1154,6 +1154,8 @@ Link to this talk:
 ---
 
 # Thank you!
+
+Many thanks to the team: **Aaron Peikert**, **Caspar van Lissa**
 
 If you want to engage:
 
